@@ -12,6 +12,12 @@ func queryFix(db *gorm.DB) {
 		//不转换，直接返回
 		return
 	}
+	fieldsLen := len(db.Statement.Schema.Fields)
+	fieldsByDBNameLen := len(db.Statement.Schema.FieldsByDBName)
+	if fieldsLen*2 == fieldsByDBNameLen {
+		//理论上，如果已经转换过了，那么应该满足这个条件
+		return
+	}
 	var converter fieldConverter
 	if config.FieldConvertType == Custom {
 		//自定义转换
