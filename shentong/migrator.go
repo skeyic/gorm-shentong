@@ -2,7 +2,6 @@ package shentong
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/migrator"
@@ -16,7 +15,6 @@ type Migrator struct {
 
 func (m Migrator) CurrentDatabase() (name string) {
 	baseName := m.Dialector.(Dialector).DummyTableName()
-	logrus.Infof("baseName: %s\n", baseName)
 	m.DB.Raw(
 		"SELECT OWNER FROM info_schem.all_tables WHERE OWNER LIKE ? ORDER BY OWNER=? DESC,OWNER limit 1",
 		baseName+"%", baseName).Scan(&name)

@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/Mystery00/go-shentong"
-	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"gorm.io/gorm/callbacks"
 	"gorm.io/gorm/clause"
@@ -74,7 +73,6 @@ func (d Dialector) Migrator(db *gorm.DB) gorm.Migrator {
 }
 
 func (d Dialector) DataTypeOf(field *schema.Field) string {
-	logrus.Debugf("field: %s, type: %s", field.Name, field.DataType)
 	switch field.DataType {
 	case schema.Bool:
 		return "BOOLEAN"
