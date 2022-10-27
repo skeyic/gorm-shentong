@@ -1,4 +1,4 @@
-package shentong
+package oscar
 
 import (
 	"github.com/emirpasic/gods/sets/hashset"

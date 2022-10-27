@@ -2,6 +2,7 @@ package shentong
 
 import (
 	"fmt"
+	"github.com/Mystery00/gorm-shentong/oscar"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/migrator"
@@ -14,7 +15,7 @@ type Migrator struct {
 }
 
 func (m Migrator) CurrentDatabase() (name string) {
-	baseName := m.Dialector.(Dialector).DummyTableName()
+	baseName := m.Dialector.Name()
 	m.DB.Raw(
 		"SELECT OWNER FROM info_schem.all_tables WHERE OWNER LIKE ? ORDER BY OWNER=? DESC,OWNER limit 1",
 		baseName+"%", baseName).Scan(&name)
@@ -225,13 +226,13 @@ func (m Migrator) TryRemoveOnUpdate(value interface{}) error {
 func (m Migrator) TryQuotifyReservedWords(values []interface{}) error {
 	return m.RunWithValue(values, func(stmt *gorm.Statement) error {
 		for idx, v := range stmt.Schema.DBNames {
-			if IsReservedWord(v) {
+			if oscar.IsReservedWord(v) {
 				stmt.Schema.DBNames[idx] = fmt.Sprintf(`"%s"`, v)
 			}
 		}
 
 		for _, v := range stmt.Schema.Fields {
-			if IsReservedWord(v.DBName) {
+			if oscar.IsReservedWord(v.DBName) {
 				v.DBName = fmt.Sprintf(`"%s"`, v.DBName)
 			}
 		}

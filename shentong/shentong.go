@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/Mystery00/go-shentong"
+	"github.com/Mystery00/gorm-shentong/oscar"
 	"gorm.io/gorm"
 	"gorm.io/gorm/callbacks"
 	"gorm.io/gorm/clause"
@@ -17,6 +18,7 @@ import (
 type Config struct {
 	DriverName        string
 	DSN               string
+	DSNConfig         *oscar.Config
 	Conn              *sql.DB
 	DefaultStringSize uint
 	FieldConvertType  FieldConvertType
@@ -28,22 +30,29 @@ type Dialector struct {
 }
 
 func Open(dsn string) gorm.Dialector {
-	return &Dialector{Config: &Config{DSN: dsn}}
+	return New(Config{DSN: dsn})
 }
 
 func New(config Config) gorm.Dialector {
-	return &Dialector{Config: &config}
+	return &Dialector{
+		Config: &config,
+	}
 }
 
 func (d Dialector) Name() string {
-	return "oracle"
+	return "shentong"
 }
 
 func (d Dialector) Initialize(db *gorm.DB) (err error) {
 	// register callbacks
 	callbacks.RegisterDefaultCallbacks(db, &callbacks.Config{LastInsertIDReversed: true})
 
+	// 官方驱动里面就写了这个
 	d.DriverName = "aci"
+
+	if d.DSN == "" {
+		d.DSN = d.DSNConfig.FormatDSN()
+	}
 	if d.Conn != nil {
 		db.ConnPool = d.Conn
 	} else {
@@ -53,14 +62,19 @@ func (d Dialector) Initialize(db *gorm.DB) (err error) {
 		}
 	}
 
-	if err = db.Callback().Query().Before("*").Register("shentong_query", queryFix); err != nil {
-		return err
+	// 在所有查询之前，设置一下钩子，用于动态替换字段名称的命名
+	if d.FieldConvertType != None {
+		// 没有配置，那么自然不需要注册钩子
+		if err = db.Callback().Query().Before("*").Register("shentong_query", queryFix); err != nil {
+			return err
+		}
 	}
 
 	return
 }
 
 func (d Dialector) Migrator(db *gorm.DB) gorm.Migrator {
+	// TODO 注，这个东西因为我自己没有用到，所以没有做适配处理
 	return Migrator{
 		Migrator: migrator.Migrator{
 			Config: migrator.Config{
@@ -157,51 +171,9 @@ func (d Dialector) BindVarTo(writer clause.Writer, stmt *gorm.Statement, v inter
 }
 
 func (d Dialector) QuoteTo(writer clause.Writer, str string) {
-	var (
-		underQuoted, selfQuoted bool
-		continuousBacktick      int8
-		shiftDelimiter          int8
-	)
-
-	for _, v := range []byte(str) {
-		switch v {
-		case '.':
-			if continuousBacktick > 0 || !selfQuoted {
-				shiftDelimiter = 0
-				underQuoted = false
-				continuousBacktick = 0
-				writer.WriteByte('"')
-			}
-			writer.WriteByte(v)
-			continue
-		default:
-			if shiftDelimiter-continuousBacktick <= 0 && !underQuoted {
-				writer.WriteByte('"')
-				underQuoted = true
-				if selfQuoted = continuousBacktick > 0; selfQuoted {
-					continuousBacktick -= 1
-				}
-			}
-
-			for ; continuousBacktick > 0; continuousBacktick -= 1 {
-				writer.WriteString(`""`)
-			}
-
-			writer.WriteByte(v)
-		}
-		shiftDelimiter++
-	}
-
-	if continuousBacktick > 0 && !selfQuoted {
-		writer.WriteString(`""`)
-	}
-	writer.WriteByte('"')
+	writer.WriteString(str)
 }
 
 func (d Dialector) Explain(sql string, vars ...interface{}) string {
 	return logger.ExplainSQL(sql, nil, `'`, vars...)
-}
-
-func (d Dialector) DummyTableName() string {
-	return "DUAL"
 }
