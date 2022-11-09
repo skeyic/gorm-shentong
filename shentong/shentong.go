@@ -3,6 +3,7 @@ package shentong
 import (
 	"database/sql"
 	"fmt"
+	"github.com/Mystery00/go-shentong"
 	_ "github.com/Mystery00/go-shentong"
 	"github.com/Mystery00/gorm-shentong/oscar"
 	"gorm.io/gorm"
@@ -23,6 +24,10 @@ type Config struct {
 	DefaultStringSize uint
 	FieldConvertType  FieldConvertType
 	FieldConvertFunc  func(string) string
+}
+
+func Init() {
+	shentong.Init()
 }
 
 type Dialector struct {

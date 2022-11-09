@@ -1,5 +1,5 @@
-github.com/Mystery00/go-shentong v0.0.0-20221025092136-a08fa4d9d592 h1:AVrYmd9jjAsG/CAsfhvLiFtHOI/Qyx+3HB23PozFHr0=
-github.com/Mystery00/go-shentong v0.0.0-20221025092136-a08fa4d9d592/go.mod h1:dRb9lvDIeW3G+Vd1NlMQfwfYTYsJl+rCf7+w6VGtHOA=
+github.com/Mystery00/go-shentong v0.0.2 h1:Vp5DXKXcFcVbnEgEh3F0EP2trAYgDw8GdPqEpdwaDic=
+github.com/Mystery00/go-shentong v0.0.2/go.mod h1:dRb9lvDIeW3G+Vd1NlMQfwfYTYsJl+rCf7+w6VGtHOA=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
