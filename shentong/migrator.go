@@ -2,7 +2,7 @@ package shentong
 
 import (
 	"fmt"
-	"github.com/Mystery00/gorm-shentong/oscar"
+	"github.com/skeyic/gorm-shentong/oscar"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/migrator"

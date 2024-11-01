@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	_ "github.com/Mystery00/go-shentong"
-	"github.com/Mystery00/gorm-shentong/oscar"
-	"github.com/Mystery00/gorm-shentong/shentong"
+	"github.com/skeyic/gorm-shentong/oscar"
+	"github.com/skeyic/gorm-shentong/shentong"
 	"gorm.io/gorm"
 	"strings"
 )

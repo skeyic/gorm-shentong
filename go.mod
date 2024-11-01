@@ -3,6 +3,7 @@ module github.com/skeyic/gorm-shentong
 go 1.15
 
 require (
+	github.com/Mystery00/go-shentong v0.0.2
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/emirpasic/gods v1.18.1
 	github.com/jinzhu/now v1.1.5 // indirect
